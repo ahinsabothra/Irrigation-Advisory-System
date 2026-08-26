@@ -1,0 +1,48 @@
+.form{
+            width: 50%;
+            margin-left: 25%;
+            border: 6px solid blanchedalmond;
+            border-radius: 6px;
+            padding: 30px;
+            min-height: 200px;
+            font-size: larger;
+        }
+fieldset {
+    padding: 20px;
+    border: 2px solid #333;
+    border-radius: 10px;
+}
+
+legend {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0 15px;
+    box-sizing: border-box;
+    border: 1px solid #888;
+    border-radius: 5px;
+}
+
+input:focus {
+    border: 2px solid blue;
+    outline: none;
+}
+
+input[type="submit"] {
+    width: auto;
+    padding: 10px 25px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: darkgreen;
+}

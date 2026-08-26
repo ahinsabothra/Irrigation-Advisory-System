@@ -1,0 +1,58 @@
+* { 
+    box-sizing: border-box; 
+} 
+body { 
+    margin: 0;
+     font-family: Arial, sans-serif; }
+
+ header { 
+    width: 100%; 
+    padding: 20px; 
+    background-color: rgb(38, 95, 69); 
+    text-align: center; 
+}
+ .container { 
+    display: flex; 
+    gap: 20px; 
+    padding: 20px; 
+ }
+.sidebar { 
+    width: 25%; 
+    padding: 20px; 
+    background-color: #d9d0d0; 
+    border-radius: 8px; 
+}  
+.content {
+     width: 75%; 
+    }  
+    .content section { 
+        padding: 20px; 
+        margin-bottom: 20px; 
+        background-color: #817171; 
+        border-radius: 5px; 
+    }
+    footer { 
+        width: 100%; 
+        padding: 15px; 
+        background-color: #333; 
+        color: white; 
+        text-align: center; }
+    .offer { 
+        width: 40%; 
+        margin: 30px auto; 
+        padding: 25px; 
+        text-align: center; 
+        background-color: #f4c542; 
+        color: #222; 
+        font-size: 24px; 
+        font-weight: bold; 
+        border-radius: 10px; 
+        box-shadow: 0 0 15px rgba(244, 197, 66, 0.8); 
+        text-shadow: 2px 2px 3px white; 
+        animation: glow 1.5s infinite alternate; } 
+    @keyframes glow { 
+            from { 
+                box-shadow: 0 0 5px #f4c542; 
+            } to { 
+                box-shadow: 0 0 25px #ff6600; 
+            } }
