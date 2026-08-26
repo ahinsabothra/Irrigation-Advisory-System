@@ -1,9 +1,9 @@
 body{
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    background-color: blanchedalmond;  
+    background-color: rgb(237, 219, 192);  
 }
 section{
-    color: rgb(47, 47, 105);
+    color: rgb(57, 57, 118);
     padding: 20px;
     margin: 20px;
     box-shadow: 0 4px 10px rgb(223 24 24 / 10%);
