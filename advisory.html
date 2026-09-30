@@ -4,40 +4,347 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Irrigation Advisory</title>
-     <link rel="stylesheet" type="text/css" href="style.css">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <style>
+        section {
+            padding: 20px;
+            margin: 20px;
+            background-color: #7ec3b5;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-box {
+            margin: 10px 0;
+        }
+
+        .input-box label {
+            display: inline-block;
+            width: 220px;
+            font-weight: bold;
+        }
+
+        .input-box input,
+        .input-box select {
+            padding: 7px;
+            width: 220px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px 5px 10px 0;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            color: black;
+            border-radius: 5px;
+        }
+
+        mark {
+            background-color: #ffeb3b;
+            padding: 2px 4px;
+        }
+    </style>
 </head>
-<style>
-    
 
-    section {
-        padding: 20px;
-        margin: 20px;
-        background-color: #706565;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    
-
-    mark {
-        background-color: #ffeb3b;
-        padding: 2px 4px;
-    }
-</style>
 <body>
+
     <header>
         <h1>Irrigation Advisory System</h1>
     </header>
+
     <section>
+
         <h2>Advisory Information</h2>
-        <p>Welcome to the Irrigation Advisory System. Here you can find information and recommendations for efficient irrigation practices based on real-time sensor data and AI analysis.</p>
-        <mark><strong>Plot Information:</strong></mark>
+
+        <p>
+            Welcome to the Irrigation Advisory System. Here you can find
+            information and recommendations for efficient irrigation practices
+            based on real-time sensor data and AI analysis.
+        </p>
+
         <hr>
-        <p>Plot ID: 12345</p>
-        <p>Farmer Name: <em>John Doe</em></p>
-        <p>Soil moisture: 60%</p>
-        <p>Recommended Irrigation Duration: 1 hour</p>
-        <p>Water Stress Level: Moderate</p>
+
+        <h2>Irrigation Advisory</h2>
+
+        <div class="input-box">
+            <label for="farmerName">Farmer Name:</label>
+            <input type="text" id="farmerName"
+                   placeholder="Enter farmer name">
+        </div>
+
+        <div class="input-box">
+            <label for="plotID">Plot ID:</label>
+            <input type="text" id="plotID"
+                   placeholder="Enter Plot ID">
+        </div>
+
+        <div class="input-box">
+            <label for="cropStage">Crop Stage:</label>
+            <select id="cropStage">
+                <option value="">Select Crop Stage</option>
+                <option value="Germination">Germination</option>
+                <option value="Vegetative">Vegetative</option>
+                <option value="Flowering">Flowering</option>
+                <option value="Maturity">Maturity</option>
+                <option value="Harvesting">Harvesting</option>
+            </select>
+        </div>
+
+        <div class="input-box">
+            <label for="soilMoisture">Current Soil Moisture (%):</label>
+            <input type="number" id="soilMoisture"
+                   min="0" max="100"
+                   placeholder="Enter moisture">
+        </div>
+
+        <div class="input-box">
+            <label for="requiredMoisture">Required Soil Moisture (%):</label>
+            <input type="number" id="requiredMoisture"
+                   min="0" max="100"
+                   placeholder="Enter required moisture">
+        </div>
+
+        <div class="input-box">
+            <label for="rainfall">Rainfall Forecast:</label>
+            <select id="rainfall">
+                <option value="">Select Forecast</option>
+                <option value="yes">Rain Expected</option>
+                <option value="no">No Rain Expected</option>
+            </select>
+        </div>
+
+        <div class="input-box">
+            <label for="area">Farm Area (acres):</label>
+            <input type="number" id="area"
+                   min="0"
+                   placeholder="Enter farm area">
+        </div>
+
+        <div class="input-box">
+            <label for="pumpStatus">Pump Status:</label>
+            <select id="pumpStatus">
+                <option value="">Select Pump Status</option>
+                <option value="ON">ON</option>
+                <option value="OFF">OFF</option>
+            </select>
+        </div>
+
+        <button onclick="checkAdvisory()">
+            Check Irrigation Advisory
+        </button>
+
+        <button onclick="farm.displayFarmInfo()">
+            Display Farm Information
+        </button>
+
+        <div class="result" id="result">
+            <h3>Advisory Result</h3>
+            <p>Enter the farm details and click "Check Irrigation Advisory".</p>
+        </div>
+
+        <div class="result" id="farmInfo">
+            <h3>Farm Information</h3>
+            <p>Click "Display Farm Information" to view the details.</p>
+        </div>
+
+        <hr>
+
+        <h2>Soil Moisture Sensor Readings</h2>
+
+        <p>
+            The soil moisture sensor collects readings every hour.
+            The following operations are performed on the readings.
+        </p>
+
+        <div class="input-box">
+            <label for="criticalValue">Critical Moisture Value (%):</label>
+            <input type="number" id="criticalValue"
+                   value="30" min="0" max="100">
+        </div>
+
+        <button onclick="analyzeSensorReadings()">
+            Analyze Sensor Readings
+        </button>
+
+        <div class="result" id="sensorResult">
+            <h3>Sensor Analysis</h3>
+            <p>Click the button to analyze the readings.</p>
+        </div>
+
     </section>
+    <script>
+        let farm = {
+
+            farmerName: "",
+            plotID: "",
+            cropStage: "",
+            soilMoisture: 0,
+            area: 0,
+            pumpStatus: "",
+
+            displayFarmInfo: function() {
+
+                document.getElementById("farmInfo").innerHTML =
+
+                    "<h3>Farm Information</h3>" +
+                    "<p><strong>Farmer Name:</strong> "
+                    + this.farmerName + "</p>" +
+                    "<p><strong>Plot ID:</strong> "
+                    + this.plotID + "</p>" +
+                    "<p><strong>Crop Stage:</strong> "
+                    + this.cropStage + "</p>" +
+                    "<p><strong>Soil Moisture:</strong> "
+                    + this.soilMoisture + "%</p>" +
+                    "<p><strong>Area:</strong> "
+                    + this.area + " acres</p>" +
+                    "<p><strong>Pump Status:</strong> "
+                    + this.pumpStatus + "</p>";
+            }
+        };
+
+        function checkAdvisory() {
+            let farmerName =
+                document.getElementById("farmerName").value;
+            let plotID =
+                document.getElementById("plotID").value;
+            let cropStage =
+                document.getElementById("cropStage").value;
+            let currentSoilMoisture =
+                Number(document.getElementById("soilMoisture").value);
+            let requiredSoilMoisture =
+                Number(document.getElementById("requiredMoisture").value);
+            let rainfall =
+                document.getElementById("rainfall").value;
+            let area =
+                Number(document.getElementById("area").value);
+            let pumpStatus =
+                document.getElementById("pumpStatus").value;
+
+            if (
+                farmerName === "" ||
+                plotID === "" ||
+                cropStage === "" ||
+                isNaN(currentSoilMoisture) ||
+                isNaN(requiredSoilMoisture) ||
+                rainfall === "" ||
+                isNaN(area) ||
+                pumpStatus === ""
+            ) {
+
+                alert("Please enter all farm details.");
+                return;
+            }
+            let moistureDeficit =
+                requiredSoilMoisture - currentSoilMoisture;
+            let recommendation;
+
+            if (rainfall === "yes") {
+                recommendation = "Postpone Irrigation";
+            }
+
+            else if (currentSoilMoisture < 30) {
+                recommendation = "Irrigation Required Immediately";
+            }
+
+            else if (
+                currentSoilMoisture >= 30 &&
+                currentSoilMoisture <= 50
+            ) {
+                recommendation = "Monitor Soil Moisture";
+            }
+
+            else {
+                recommendation = "Irrigation Not Required";
+            }
+
+            farm.farmerName = farmerName;
+            farm.plotID = plotID;
+            farm.cropStage = cropStage;
+            farm.soilMoisture = currentSoilMoisture;
+            farm.area = area;
+            farm.pumpStatus = pumpStatus;
+
+            document.getElementById("result").innerHTML =
+
+                "<h3>Advisory Result</h3>" +
+                "<p><strong>Farmer Name:</strong> "
+                + farmerName + "</p>" +
+                "<p><strong>Plot ID:</strong> "
+                + plotID + "</p>" +
+                "<p><strong>Current Soil Moisture:</strong> "
+                + currentSoilMoisture + "%</p>" +
+                "<p><strong>Required Soil Moisture:</strong> "
+                + requiredSoilMoisture + "%</p>" +
+                "<p><strong>Moisture Deficit:</strong> "
+                + moistureDeficit + "%</p>" +
+                "<p><strong>Rainfall Forecast:</strong> "
+                + (rainfall === "yes"
+                    ? "Rain Expected"
+                    : "No Rain Expected") + "</p>" +
+                "<p><strong>Crop Stage:</strong> "
+                + cropStage + "</p>" +
+                "<h3>Recommendation: "
+                + recommendation + "</h3>";
+
+            alert(
+                "Moisture Deficit: " +
+                moistureDeficit +
+                "%\nRecommendation: " +
+                recommendation
+            );
+        }
+
+        function analyzeSensorReadings() {
+            let sensorReadings = [
+                25, 32, 45, 28, 35, 50,
+                42, 27, 38, 55, 30, 24
+            ];
+
+            let criticalValue =
+                Number(document.getElementById("criticalValue").value);
+            let allReadings = sensorReadings.join("%, ") + "%";
+            let minimum = Math.min(...sensorReadings);
+            let maximum = Math.max(...sensorReadings);
+            let total = 0;
+            for (let i = 0; i < sensorReadings.length; i++) {
+                total = total + sensorReadings[i];
+            }
+            let average =
+                total / sensorReadings.length;
+            let belowCritical = 0;
+            for (let i = 0; i < sensorReadings.length; i++) {
+                if (sensorReadings[i] < criticalValue) {
+                    belowCritical++;
+                }
+            }
+
+            document.getElementById("sensorResult").innerHTML =
+                "<h3>Sensor Analysis</h3>" +
+                "<p><strong>All Sensor Readings:</strong><br>"
+                + allReadings + "</p>" +
+                "<p><strong>Minimum Moisture Level:</strong> "
+                + minimum + "%</p>" +
+                "<p><strong>Maximum Moisture Level:</strong> "
+                + maximum + "%</p>" +
+                "<p><strong>Average Soil Moisture:</strong> "
+                + average.toFixed(2) + "%</p>" +
+                "<p><strong>Critical Moisture Value:</strong> "
+                + criticalValue + "%</p>" +
+                "<p><strong>Readings Below Critical Value:</strong> "
+                + belowCritical + "</p>";
+        }
+
+    </script>
 </body>
 </html>

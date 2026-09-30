@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Form</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="form.css">
+    <style>
+        .form {
+            width: 50%;
+            margin-left: 25%;
+            border: 6px solid blanchedalmond;
+            border-radius: 6px;
+            padding: 30px;
+            min-height: 200px;
+            font-size: larger;
+        }
+
+        .error {
+            border: 2px solid red;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form id="farmerForm" action="backend.pyp">
+
+        <fieldset class="form">
+            <legend>Personal Informaton</legend>
+
+            <label for="name">Name: </label>
+            <input type="text" id="name" name="name"
+                   required placeholder="Enter your Name" autofocus>
+            <span id="nameError" class="error-message"></span>
+            <br><br><br>
+
+            <label for="mobnum">Mobile Number: </label>
+            <input type="number" id="mobnum" name="mobnum"
+                   required pattern="[0-9]{10}"
+                   placeholder="Enter a number">
+            <span id="mobnumError" class="error-message"></span>
+            <br><br><br>
+
+            <label for="email">Email: </label>
+            <input type="email" id="email" name="email"
+                   required placeholder="Enter an email">
+            <span id="emailError" class="error-message"></span>
+
+        </fieldset>
+
+
+        <fieldset class="form">
+            <legend>Plot Informaton</legend>
+
+            <label for="PID">Plot ID</label>
+            <input type="text" id="PID" name="PID"
+                   required placeholder="Enter your Plot ID">
+            <span id="PIDError" class="error-message"></span>
+            <br><br><br>
+
+            <label for="village">Village: </label>
+            <input type="text" id="village" name="village"
+                   required placeholder="Enter your village here">
+            <span id="villageError" class="error-message"></span>
+            <br><br><br>
+
+            <label for="date">Date Of Registration</label>
+            <input type="date" id="date" name="date" required>
+            <span id="dateError" class="error-message"></span>
+            <br><br><br>
+
+            <label for="photo">Upload your Farm Photo</label>
+            <input type="file" id="photo" name="photo" required>
+            <br><br>
+
+        </fieldset>
+
+
+        <fieldset class="form">
+            <legend>Farming Informaton</legend>
+
+            <label for="c-stage">Crop Stage</label>
+
+            <select id="c-stage" name="cropStage" required>
+                <option value="">Select Crop Stage</option>
+                <option value="germination">Germination</option>
+                <option value="vegetative">Vegetative</option>
+                <option value="flowering">Flowering</option>
+                <option value="maturity">Maturity</option>
+                <option value="harvesting">Harvesting</option>
+            </select>
+
+            <span id="cropStageError" class="error-message"></span>
+            <br><br><br>
+
+
+            <label for="soiltype">Soil type</label>
+
+            <select id="soiltype" name="soiltype" required>
+                <option value="">Select Soil Type</option>
+                <option value="black">Black Soil</option>
+                <option value="clayey">Clayey Soil</option>
+                <option value="sandy">Sandy Soil</option>
+                <option value="loamy">Loamy Soil</option>
+                <option value="silty">Silty Soil</option>
+            </select>
+
+            <span id="soilTypeError" class="error-message"></span>
+            <br><br><br>
+
+
+            <label for="irrigation">Irrigation Method</label>
+
+            <select id="irrigation" name="irrigation" required>
+                <option value="">Select Irrigation Method</option>
+                <option value="drip">Drip Irrigation</option>
+                <option value="sprinkler">Sprinkler Irrigation</option>
+                <option value="flood">Flood Irrigation</option>
+                <option value="furrow">Furrow Irrigation</option>
+            </select>
+
+            <span id="irrigationError" class="error-message"></span>
+            <br><br><br>
+
+
+            <label for="soilMoisture">Soil Moisture (%)</label>
+
+            <input type="number" id="soilMoisture"
+                   name="soilMoisture"
+                   min="0" max="100"
+                   placeholder="Enter 0-100">
+
+            <span id="soilMoistureError" class="error-message"></span>
+            <br><br><br>
+
+
+            <button type="submit" style="border-radius: 6px;">
+                Submit
+            </button>
+
+            <button type="reset" style="border-radius: 6px;">
+                Reset
+            </button>
+
+        </fieldset>
+
+    </form>
+
+
+    <script>
+
+        const form = document.getElementById("farmerForm");
+
+        form.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            const name = document.getElementById("name");
+            const mobnum = document.getElementById("mobnum");
+            const email = document.getElementById("email");
+            const PID = document.getElementById("PID");
+            const village = document.getElementById("village");
+            const date = document.getElementById("date");
+            const cropStage = document.getElementById("c-stage");
+            const soiltype = document.getElementById("soiltype");
+            const irrigation = document.getElementById("irrigation");
+            const soilMoisture = document.getElementById("soilMoisture");
+            const nameError = document.getElementById("nameError");
+            const mobnumError = document.getElementById("mobnumError");
+            const emailError = document.getElementById("emailError");
+            const PIDError = document.getElementById("PIDError");
+            const villageError = document.getElementById("villageError");
+            const dateError = document.getElementById("dateError");
+            const cropStageError = document.getElementById("cropStageError");
+            const soilTypeError = document.getElementById("soilTypeError");
+            const irrigationError = document.getElementById("irrigationError");
+            const soilMoistureError =
+                document.getElementById("soilMoistureError");
+
+            nameError.textContent = "";
+            mobnumError.textContent = "";
+            emailError.textContent = "";
+            PIDError.textContent = "";
+            villageError.textContent = "";
+            dateError.textContent = "";
+            cropStageError.textContent = "";
+            soilTypeError.textContent = "";
+            irrigationError.textContent = "";
+            soilMoistureError.textContent = "";
+
+            const fields = [
+                name, mobnum, email, PID, village, date,
+                cropStage, soiltype, irrigation, soilMoisture
+            ];
+
+            fields.forEach(function(field) {
+                field.classList.remove("error");
+            });
+
+
+            let valid = true;
+
+            name.value = name.value.trim();
+
+            if (name.value === "") {
+
+                nameError.textContent = "Name is required.";
+                name.classList.add("error");
+                valid = false;
+
+            } else if (!/^[A-Za-z ]+$/.test(name.value)) {
+
+                nameError.textContent =
+                    "Name should contain alphabets and spaces only.";
+
+                name.classList.add("error");
+                valid = false;
+            }
+
+            mobnum.value = mobnum.value.trim();
+
+            const mobilePattern = /^[6-9][0-9]{9}$/;
+
+            if (mobnum.value === "") {
+
+                mobnumError.textContent =
+                    "Mobile number is required.";
+
+                mobnum.classList.add("error");
+                valid = false;
+
+            } else if (!mobilePattern.test(mobnum.value)) {
+
+                mobnumError.textContent =
+                    "Enter a valid 10-digit Indian mobile number.";
+
+                mobnum.classList.add("error");
+                valid = false;
+            }
+
+            email.value = email.value.trim();
+
+            const emailPattern =
+                /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+            if (email.value === "") {
+
+                emailError.textContent =
+                    "Email is required.";
+
+                email.classList.add("error");
+                valid = false;
+
+            } else if (!emailPattern.test(email.value)) {
+
+                emailError.textContent =
+                    "Enter a valid email address.";
+
+                email.classList.add("error");
+                valid = false;
+            }
+
+            PID.value = PID.value.trim();
+
+            const plotPattern = /^[A-Za-z0-9-]+$/;
+
+            if (PID.value === "") {
+
+                PIDError.textContent =
+                    "Plot ID is required.";
+
+                PID.classList.add("error");
+                valid = false;
+
+            } else if (!plotPattern.test(PID.value)) {
+
+                PIDError.textContent =
+                    "Plot ID can contain letters, numbers and hyphens only.";
+
+                PID.classList.add("error");
+                valid = false;
+            }
+
+            village.value = village.value.trim();
+
+            if (village.value === "") {
+
+                villageError.textContent =
+                    "Village is required.";
+
+                village.classList.add("error");
+                valid = false;
+            }
+
+            if (cropStage.value === "") {
+
+                cropStageError.textContent =
+                    "Please select a Crop Stage.";
+
+                cropStage.classList.add("error");
+                valid = false;
+            }
+
+            if (soiltype.value === "") {
+
+                soilTypeError.textContent =
+                    "Please select a Soil Type.";
+
+                soiltype.classList.add("error");
+                valid = false;
+            }
+
+            if (irrigation.value === "") {
+
+                irrigationError.textContent =
+                    "Please select an Irrigation Method.";
+
+                irrigation.classList.add("error");
+                valid = false;
+            }
+
+            if (soilMoisture.value === "") {
+
+                soilMoistureError.textContent =
+                    "Soil Moisture is required.";
+
+                soilMoisture.classList.add("error");
+                valid = false;
+
+            } else if (
+                soilMoisture.value < 0 ||
+                soilMoisture.value > 100
+            ) {
+
+                soilMoistureError.textContent =
+                    "Soil Moisture must be between 0 and 100%.";
+
+                soilMoisture.classList.add("error");
+                valid = false;
+            }
+
+            if (date.value === "") {
+
+                dateError.textContent =
+                    "Registration Date is required.";
+
+                date.classList.add("error");
+                valid = false;
+
+            } else {
+
+                const selectedDate = new Date(date.value);
+                const today = new Date();
+
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate > today) {
+
+                    dateError.textContent =
+                        "Registration Date cannot be in the future.";
+
+                    date.classList.add("error");
+                    valid = false;
+                }
+            }
+            if (valid) {
+                alert("Registration successful!");
+            }
+
+        });
+        form.addEventListener("reset", function() {
+
+            setTimeout(function() {
+
+                const errorFields =
+                    document.querySelectorAll(".error");
+
+                errorFields.forEach(function(field) {
+                    field.classList.remove("error");
+                });
+
+                const errorMessages =
+                    document.querySelectorAll(".error-message");
+
+                errorMessages.forEach(function(message) {
+                    message.textContent = "";
+                });
+
+            }, 0);
+
+        });
+
+    </script>
+
+</body>
+</html>
