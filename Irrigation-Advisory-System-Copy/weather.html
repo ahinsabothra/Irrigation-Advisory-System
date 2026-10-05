@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+     <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+       
+        div{
+            text-align: center;
+            border: 3px solid rgb(214, 156, 156);
+            margin: 50px; 
+            padding: 50px 50px;
+            display: flex;
+            justify-content: center;
+        }
+        h1{
+            text-align: center;
+        }
+        header.topbar { position: sticky; top: 0; z-index: 10; background: #1f4d3a; }
+        header.topbar ul { list-style: none; margin: 0; padding: 0 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+        header.topbar a { display: block; padding: 14px; color: #e6f0e4; text-decoration: none; font-weight: 500; }
+        header.topbar a:hover { background: #4f8a5b; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+        <nav id="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="dashboard.html">Farm dashboard</a></li>
+                <li><a href="advisory.html">Irrigation Advisory</a></li>
+                <li><a href="table.html">Sensor data</a></li>
+                <li><a href="registration.html">Registration Form</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <h1>Today's Weather Forecast</h1>
+    <hr>
+    <div>
+        <figure>
+            <iframe src="https://embed.windy.com/embed2.html?..." width="550" height="550" allowfullscreen></iframe>
+            <figcaption> Weather Forecast</figcaption>
+        </figure>
+        <figure>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3
+        770.7510575075858!2d72.89834557525333!3d19.074679852013922!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c6279e6fa183%3A0x8b414750f755e236!2sSomaiya%20Vidyavihar%20University!5e0!3m2!1sen!2sin!4v1785671238526!5m2!1sen!2sin" 
+        width="550" height="550" allowfullscreen ></iframe>
+            <figcaption> Location on Google Maps</figcaption>
+        </figure>
+       
+    </div>
+</body>
+</html>

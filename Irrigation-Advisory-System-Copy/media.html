@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive webpage</title>
+     <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+        
+        h1{
+            text-align: center;
+        }
+        div{
+            display: flex;
+            justify-content: center;
+            padding: 70px 50px;
+        header.topbar { position: sticky; top: 0; z-index: 10; background: #1f4d3a; }
+        header.topbar ul { list-style: none; margin: 0; padding: 0 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+        header.topbar a { display: block; padding: 14px; color: #e6f0e4; text-decoration: none; font-weight: 500; }
+        header.topbar a:hover { background: #4f8a5b; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+        <nav id="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="dashboard.html">Farm dashboard</a></li>
+                <li><a href="advisory.html">Irrigation Advisory</a></li>
+                <li><a href="table.html">Sensor data</a></li>
+                <li><a href="registration.html">Registration Form</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <h1>Awareness Video</h1>
+    <hr>
+    <div>
+        <video controls autoplay loop width="800px" height="600px" poster="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzeCeOxEaZ8cNjUAHmtALGfDo9Gr1BOyJ6rMlaVDYHUw&s=10">
+            <source src="awarness.mp4" type="video/mp4">
+        </video>
+        <audio controls>
+            <source src="Captain_Jack_Sparrow.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+    <script>alert("This is my website");</script>
+</body>
+</html>

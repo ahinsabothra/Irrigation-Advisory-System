@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Data - Irrigation Advisory System</title>
+    <style>
+        :root {
+            --forest: #1f4d3a;
+            --leaf: #4f8a5b;
+            --mint: #e6f0e4;
+            --page: #f6f8f2;
+            --soil: #7a5c3e;
+            --water: #1d6fa5;
+            --water-light: #d8ecf7;
+            --ink: #22302a;
+            --amber: #b45309;
+            --amber-light: #fef3c7;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 70px;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--page);
+        }
+
+        /* ---------- Top bar ---------- */
+        header.topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--forest);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        header.topbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        header.topbar a {
+            display: block;
+            padding: 14px 14px;
+            color: #e6f0e4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        header.topbar a:hover,
+        header.topbar a:focus-visible {
+            background: var(--leaf);
+            color: #fff;
+            outline: none;
+        }
+
+        header.topbar a.current {
+            background: var(--leaf);
+            color: #fff;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            text-align: center;
+            padding: 50px 20px 44px;
+            color: #fff;
+            background: linear-gradient(160deg, var(--forest), var(--leaf));
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 5vw, 2.8rem);
+        }
+
+        .hero p.tagline {
+            margin: 0 0 20px;
+            font-style: italic;
+            color: var(--water-light);
+            font-size: 1.1rem;
+        }
+
+        .hero a.scroll-cue {
+            display: inline-block;
+            padding: 10px 22px;
+            border: 2px solid #fff;
+            border-radius: 30px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .hero a.scroll-cue:hover {
+            background: #fff;
+            color: var(--forest);
+        }
+
+        /* ---------- Layout ---------- */
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 30px 20px 10px;
+        }
+
+        section {
+            background: #fff;
+            border-left: 5px solid var(--leaf);
+            border-radius: 6px;
+            padding: 22px 26px;
+            margin: 0 0 24px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        section h2 {
+            margin-top: 0;
+            color: var(--forest);
+        }
+
+        section.sensor-section {
+            border-left-color: var(--water);
+        }
+
+        section.sensor-section h2 {
+            color: var(--water);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+
+        .reveal.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* ---------- Table Styles ---------- */
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 14px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            text-align: left;
+        }
+
+        table.data-table caption {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--forest);
+            text-align: left;
+            margin-bottom: 12px;
+        }
+
+        table.data-table thead th {
+            background: var(--forest);
+            color: #fff;
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            letter-spacing: 0.3px;
+        }
+
+        table.data-table tbody td {
+            padding: 13px 16px;
+            border-bottom: 1px solid #e5ece6;
+            color: var(--ink);
+            font-size: 0.95rem;
+        }
+
+        table.data-table tbody tr:nth-child(even) {
+            background-color: #fafcf9;
+        }
+
+        table.data-table tbody tr:hover {
+            background-color: var(--mint);
+            transition: background-color 0.2s ease;
+        }
+
+        table.data-table tfoot td {
+            padding: 14px 16px;
+            background: var(--mint);
+            font-weight: 700;
+            color: var(--forest);
+            border-top: 2px solid var(--leaf);
+        }
+
+        /* Badges for status */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-urgent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-moderate {
+            background: var(--amber-light);
+            color: var(--amber);
+        }
+
+        .badge-ok {
+            background: var(--mint);
+            color: var(--forest);
+        }
+
+        .badge-water {
+            background: var(--water-light);
+            color: var(--water);
+        }
+
+        /* ---------- Footer ---------- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--forest);
+            color: #cfe0d0;
+            margin-top: 40px;
+        }
+
+        #top-btn {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: var(--forest);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        #top-btn.show {
+            display: block;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .reveal {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <nav id="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="dashboard.html">Farm dashboard</a></li>
+                <li><a href="advisory.html">Irrigation Advisory</a></li>
+                <li><a href="table.html" class="current">Sensor data</a></li>
+                <li><a href="registration.html">Registration Form</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h1>Sensor &amp; Irrigation Data</h1>
+        <p class="tagline">Real-time telemetry and irrigation recommendations across farm plots</p>
+        <a class="scroll-cue" href="#sensor-table">Scroll down ↓</a>
+    </div>
+
+    <main>
+        <section class="intro reveal" id="sensor-table">
+            <h2>Live Plot Telemetry</h2>
+            <p>
+                The table below provides active sensor feedback for registered agricultural plots.
+                Moisture percentages and weather forecasts determine dynamic water replenishment needs.
+            </p>
+        </section>
+
+        <section class="sensor-section reveal">
+            <h2>Soil Moisture &amp; Irrigation Table</h2>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Plot ID</th>
+                            <th>Farmer Name</th>
+                            <th>Soil Moisture (%)</th>
+                            <th>Weather</th>
+                            <th>Irrigation Recommendation</th>
+                            <th>Water Requirement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>P101</strong></td>
+                            <td>Ravi Sharma</td>
+                            <td><span class="badge badge-urgent">22%</span></td>
+                            <td>Sunny</td>
+                            <td><span class="badge badge-urgent">Irrigate Immediately</span></td>
+                            <td><strong>650 L</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>P102</strong></td>
+                            <td>Sunny Mehta</td>
+                            <td><span class="badge badge-ok">48%</span></td>
+                            <td>Cloudy</td>
+                            <td><span class="badge badge-ok">Irrigation Not Required</span></td>
+                            <td><strong>200 L</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>P103</strong></td>
+                            <td>Mohan Singh</td>
+                            <td><span class="badge badge-moderate">31%</span></td>
+                            <td>Hot &amp; Dry</td>
+                            <td><span class="badge badge-moderate">Moderate Irrigation</span></td>
+                            <td><strong>420 L</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>P104</strong></td>
+                            <td>Priya Nair</td>
+                            <td><span class="badge badge-urgent">18%</span></td>
+                            <td>Windy</td>
+                            <td><span class="badge badge-urgent">Heavy Irrigation</span></td>
+                            <td><strong>780 L</strong></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">TOTAL PLOTS MONITORED = 4</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>NO COPYRIGHT - Irrigation Advisory System</footer>
+
+    <button id="top-btn" aria-label="Back to top">↑</button>
+
+    <script>
+        var items = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('show');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            items.forEach(function (el) { io.observe(el); });
+        } else {
+            items.forEach(function (el) { el.classList.add('show'); });
+        }
+
+        var btn = document.getElementById('top-btn');
+        window.addEventListener('scroll', function () {
+            btn.classList.toggle('show', window.scrollY > 400);
+        });
+        btn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+
+</html>

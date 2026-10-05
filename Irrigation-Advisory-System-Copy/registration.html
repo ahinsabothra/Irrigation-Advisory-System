@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Registration - Smart Irrigation Advisory</title>
+    <style>
+        :root {
+            --forest: #1f4d3a;
+            --leaf: #4f8a5b;
+            --mint: #e6f0e4;
+            --page: #f6f8f2;
+            --soil: #7a5c3e;
+            --water: #1d6fa5;
+            --water-light: #d8ecf7;
+            --ink: #22302a;
+            --error: #c0392b;
+            --error-light: #fde8e8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 70px;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--page);
+        }
+
+        /* ---------- Top bar ---------- */
+        header.topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--forest);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        header.topbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        header.topbar a {
+            display: block;
+            padding: 14px 14px;
+            color: #e6f0e4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        header.topbar a:hover,
+        header.topbar a:focus-visible {
+            background: var(--leaf);
+            color: #fff;
+            outline: none;
+        }
+
+        header.topbar a.current {
+            background: var(--leaf);
+            color: #fff;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            text-align: center;
+            padding: 50px 20px 44px;
+            color: #fff;
+            background: linear-gradient(160deg, var(--forest), var(--leaf));
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 5vw, 2.8rem);
+        }
+
+        .hero p.tagline {
+            margin: 0 0 20px;
+            font-style: italic;
+            color: var(--water-light);
+            font-size: 1.1rem;
+        }
+
+        .hero a.scroll-cue {
+            display: inline-block;
+            padding: 10px 22px;
+            border: 2px solid #fff;
+            border-radius: 30px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .hero a.scroll-cue:hover {
+            background: #fff;
+            color: var(--forest);
+        }
+
+        /* ---------- Layout ---------- */
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px 10px;
+        }
+
+        .intro-section {
+            background: #fff;
+            border-left: 5px solid var(--leaf);
+            border-radius: 6px;
+            padding: 22px 26px;
+            margin: 0 0 24px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .intro-section h2 {
+            margin-top: 0;
+            color: var(--forest);
+        }
+
+        /* ---------- Fieldset Cards ---------- */
+        fieldset {
+            background: #fff;
+            border: none;
+            border-left: 5px solid var(--leaf);
+            border-radius: 6px;
+            padding: 24px 26px 26px;
+            margin: 0 0 24px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        fieldset.water {
+            border-left-color: var(--water);
+        }
+
+        fieldset.soil {
+            border-left-color: var(--soil);
+        }
+
+        legend {
+            padding: 5px 16px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #fff;
+            background: var(--forest);
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        fieldset.water legend {
+            background: var(--water);
+        }
+
+        fieldset.soil legend {
+            background: var(--soil);
+        }
+
+        .fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 18px 24px;
+            margin-top: 14px;
+        }
+
+        /* Field header with label and error message placed beside it */
+        .field-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+            gap: 6px;
+        }
+
+        .field-header label {
+            margin-bottom: 0;
+            font-weight: 600;
+            color: var(--forest);
+            font-size: 0.95rem;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 10px 12px;
+            font: inherit;
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid #b7c7b8;
+            border-radius: 5px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field input[type="file"] {
+            padding: 8px 10px;
+            background: var(--mint);
+            border: 1px dashed var(--leaf);
+            cursor: pointer;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            outline: 2px solid var(--water);
+            outline-offset: 1px;
+            border-color: var(--water);
+        }
+
+        /* Task 2: jQuery highlights invalid fields with .error class */
+        .field input.error,
+        .field select.error {
+            border: 2px solid var(--error) !important;
+            background-color: var(--error-light) !important;
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.2) !important;
+        }
+
+        /* Task 2: Error message displayed beside the field */
+        .error-message {
+            color: var(--error);
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* ---------- Buttons ---------- */
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        button.btn {
+            padding: 12px 28px;
+            font: inherit;
+            font-weight: 600;
+            color: #fff;
+            background: var(--forest);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        button.btn:hover,
+        button.btn:focus-visible {
+            background: var(--leaf);
+            outline: none;
+        }
+
+        button.btn.secondary {
+            background: var(--water);
+        }
+
+        button.btn.secondary:hover,
+        button.btn.secondary:focus-visible {
+            background: #145277;
+        }
+
+        /* ---------- Confirmation Card (jQuery DOM Manipulation) ---------- */
+        #confirmationCard {
+            display: none;
+            background: #fff;
+            border-left: 5px solid var(--leaf);
+            border-radius: 6px;
+            padding: 24px 28px;
+            margin: 24px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #confirmationCard h3 {
+            margin-top: 0;
+            color: var(--forest);
+            font-size: 1.3rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px 20px;
+            margin-top: 14px;
+            padding: 16px;
+            background: var(--mint);
+            border-radius: 6px;
+        }
+
+        .summary-item {
+            font-size: 0.95rem;
+        }
+
+        .summary-item strong {
+            color: var(--forest);
+            display: block;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ---------- Footer & Back to top ---------- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            background: var(--forest);
+            color: #cfe0d0;
+        }
+
+        #top-btn {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: var(--forest);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        #top-btn.show {
+            display: block;
+        }
+
+        /* Reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+
+        .reveal.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .reveal {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="topbar">
+        <nav id="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="dashboard.html">Farm dashboard</a></li>
+                <li><a href="advisory.html">Irrigation Advisory</a></li>
+                <li><a href="table.html">Sensor data</a></li>
+                <li><a class="current" href="registration.html">Registration Form</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h1>Farmer Registration</h1>
+        <p class="tagline">Register your agricultural plot for AI-based Smart Irrigation Advisory</p>
+        <a class="scroll-cue" href="#farmerForm">Register Now ↓</a>
+    </div>
+
+    <main>
+        <section class="intro-section reveal">
+            <h2>Portal Registration</h2>
+            <p>
+                Complete the registration below to connect your farm plots with our AI-based Smart Irrigation Advisory portal. 
+                Accurate soil, crop, and telemetry details ensure tailored irrigation schedules.
+            </p>
+        </section>
+
+        <!-- Main Form -->
+        <form id="farmerForm" novalidate>
+
+            <!-- Personal Information -->
+            <fieldset class="reveal">
+                <legend>Personal Information</legend>
+                <div class="fields">
+                    <div class="field">
+                        <div class="field-header">
+                            <label for="farmerName">Farmer Name *</label>
+                            <span class="error-message" id="farmerNameError"></span>
+                        </div>
+                        <input type="text" id="farmerName" name="farmerName" placeholder="Enter full name (alphabets &amp; spaces only)" autofocus>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-header">
+                            <label for="mobileNumber">Mobile Number *</label>
+                            <span class="error-message" id="mobileNumberError"></span>
+                        </div>
+                        <input type="text" id="mobileNumber" name="mobileNumber" placeholder="Enter 10-digit mobile number" maxlength="10">
+                    </div>
+
+                    <div class="field">
+                        <div class="field-header">
+                            <label for="email">Email *</label>
+                            <span class="error-message" id="emailError"></span>
+                        </div>
+                        <input type="email" id="email" name="email" placeholder="e.g. farmer@example.com">
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Plot Information -->
+            <fieldset class="water reveal">
+                <legend>Plot Information</legend>
+                <div class="fields">
+                    <div class="field">
+                        <div class="field-header">
+                            <label for="plotId">Plot ID *</label>
+                            <span class="error-message" id="plotIdError"></span>
+                        </div>
+                        <input type="text" id="plotId" name="plotId" placeholder="e.g. AGR-1234">
+                    </div>
+
+                    <div class="field">
+                        <div class="field-header">
+                            <label for="village">Village *</label>
+                            <span class="error-message" id="villageError"></span>
+                        </div>
+                        <input type="text" id="village" name="village" placeholder="Enter your village">
+                    </div>
+
+                    <div class="field">
+                        <div class="field-header">
+                            <label for="registrationDate">Registration Date *</label>
+                            <span class="error-message" id="registrationDateError"></span>
+                        </div>
+                        <input type="date" id="registrationDate" name="registrationDate">
+                    </div>
+
+                    <div class="field">
+                        <div class="field-header">
+                            <label for="farmPhoto">Farm Photo *</label>
+                            <span class="error-message" id="farmPhotoError"></span>
+                        </div>
+                        <input type="file" id="farmPhoto" name="farmPhoto" accept="image/*">
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Farming Information -->
+            <fieldset class="soil reveal">
+                <legend>Farming Information</legend>
+                <div class="fields">
+                    <div class="field">
+                        <div class="field-header">
+                            <label for="cropStage">Crop Stage *</label>
+                            <span class="error-message" id="cropStageError"></span>
+                        </div>
+                        <select id="cropStage" name="cropStage">
+                            <option value="">Select Crop Stage</option>
+                            <option value="Germination">Germination</option>
+                            <option value="Vegetative">Vegetative</option>
+                            <option value="Flowering">Flowering</option>
+                            <option value="Maturity">Maturity</option>
+                            <option value="Harvesting">Harvesting</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-header">
+                            <label for="soilType">Soil Type *</label>
+                            <span class="error-message" id="soilTypeError"></span>
+                        </div>
+                        <select id="soilType" name="soilType">
+                            <option value="">Select Soil Type</option>
+                            <option value="Black Soil">Black Soil</option>
+                            <option value="Clayey Soil">Clayey Soil</option>
+                            <option value="Sandy Soil">Sandy Soil</option>
+                            <option value="Loamy Soil">Loamy Soil</option>
+                            <option value="Silty Soil">Silty Soil</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-header">
+                            <label for="irrigationMethod">Irrigation Method *</label>
+                            <span class="error-message" id="irrigationMethodError"></span>
+                        </div>
+                        <select id="irrigationMethod" name="irrigationMethod">
+                            <option value="">Select Irrigation Method</option>
+                            <option value="Drip Irrigation">Drip Irrigation</option>
+                            <option value="Sprinkler Irrigation">Sprinkler Irrigation</option>
+                            <option value="Flood Irrigation">Flood Irrigation</option>
+                            <option value="Furrow Irrigation">Furrow Irrigation</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-header">
+                            <label for="soilMoisture">Soil Moisture (%) *</label>
+                            <span class="error-message" id="soilMoistureError"></span>
+                        </div>
+                        <input type="number" id="soilMoisture" name="soilMoisture" min="0" max="100" placeholder="Enter 0-100">
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Submit and Reset Buttons -->
+            <div class="actions reveal">
+                <button type="submit" class="btn" id="submitBtn">Submit Registration</button>
+                <button type="reset" class="btn secondary" id="resetBtn">Reset</button>
+            </div>
+        </form>
+
+        <!-- Dynamic Confirmation Card generated via jQuery DOM manipulation -->
+        <div id="confirmationCard" role="region" aria-live="polite"></div>
+    </main>
+
+    <footer>NO COPYRIGHT - Irrigation Advisory System</footer>
+
+    <button id="top-btn" aria-label="Back to top">↑</button>
+
+    <!-- jQuery Library -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            // Prevent future registration dates: set max attribute to today's date using jQuery
+            var today = new Date().toISOString().split("T")[0];
+            $("#registrationDate").attr("max", today);
+
+            /* ==========================================================================
+               TASK 2: HELPER FUNCTIONS FOR HIGHLIGHTING AND DISPLAYING ERROR MESSAGES
+               ========================================================================== */
+            
+            // Display an error message beside the invalid field and highlight the field using jQuery
+            function showError(fieldId, message) {
+                $("#" + fieldId).addClass("error");
+                $("#" + fieldId + "Error").text(message);
+            }
+
+            // Clear all field error highlights and error messages using jQuery
+            function clearErrors() {
+                $("#farmerForm input, #farmerForm select").removeClass("error");
+                $(".error-message").text("");
+                $("#confirmationCard").slideUp(300).empty();
+            }
+
+            /* ==========================================================================
+               TASK 2 & TASK 3: JQUERY EVENT HANDLING FOR TRIMMING & BLUR VALIDATION
+               ========================================================================== */
+
+            // Task 2: Remove leading and trailing spaces using $.trim() on blur
+            $("#farmerName, #plotId, #village, #mobileNumber, #email").on("blur", function () {
+                var trimmedValue = $.trim($(this).val());
+                $(this).val(trimmedValue);
+            });
+
+            // Task 3: Real-time blur validation for Mobile Number
+            $("#mobileNumber").on("blur", function () {
+                var val = $.trim($(this).val());
+                $(this).val(val);
+                if (val !== "") {
+                    validateMobileNumber();
+                }
+            });
+
+            // Task 3: Real-time blur validation for Email
+            $("#email").on("blur", function () {
+                var val = $.trim($(this).val());
+                $(this).val(val);
+                if (val !== "") {
+                    validateEmail();
+                }
+            });
+
+            // Real-time error clearing on input or change event using jQuery
+            $("#farmerForm input, #farmerForm select").on("input change", function () {
+                var fieldId = $(this).attr("id");
+                $(this).removeClass("error");
+                $("#" + fieldId + "Error").text("");
+            });
+
+            /* ==========================================================================
+               TASK 3: VALIDATION FUNCTIONS WITH REGULAR EXPRESSIONS
+               ========================================================================== */
+
+            // Validates 10-digit Indian mobile number: starts with 6, 7, 8, or 9 and has 10 digits
+            function validateMobileNumber() {
+                var mobileVal = $.trim($("#mobileNumber").val());
+                $("#mobileNumber").val(mobileVal);
+                var indianMobileRegex = /^[6-9]\d{9}$/;
+
+                if (mobileVal === "") {
+                    showError("mobileNumber", "Mobile Number is required.");
+                    return false;
+                } else if (!/^\d+$/.test(mobileVal)) {
+                    showError("mobileNumber", "Mobile Number must contain digits only.");
+                    return false;
+                } else if (mobileVal.length !== 10) {
+                    showError("mobileNumber", "Mobile Number must be exactly 10 digits.");
+                    return false;
+                } else if (!indianMobileRegex.test(mobileVal)) {
+                    showError("mobileNumber", "Enter a valid 10-digit Indian number starting with 6, 7, 8, or 9.");
+                    return false;
+                }
+                return true;
+            }
+
+            // Validates Email format using standard regular expression
+            function validateEmail() {
+                var emailVal = $.trim($("#email").val());
+                $("#email").val(emailVal);
+                var emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+                if (emailVal === "") {
+                    showError("email", "Email address is required.");
+                    return false;
+                } else if (!emailRegex.test(emailVal)) {
+                    showError("email", "Enter a valid email address (e.g. farmer@example.com).");
+                    return false;
+                }
+                return true;
+            }
+
+            /* ==========================================================================
+               FORM SUBMISSION EVENT HANDLER (TASKS 2 & 3)
+               ========================================================================== */
+            $("#farmerForm").on("submit", function (event) {
+                // Prevent form submission until all validations pass
+                event.preventDefault();
+                clearErrors();
+
+                var isValid = true;
+
+                // ----------------------------------------------------------------------
+                // TASK 2: REQUIRED TEXT FIELD VALIDATION (Farmer Name, Plot ID, Village)
+                // ----------------------------------------------------------------------
+                var farmerName = $.trim($("#farmerName").val());
+                $("#farmerName").val(farmerName);
+
+                var plotId = $.trim($("#plotId").val());
+                $("#plotId").val(plotId);
+
+                var village = $.trim($("#village").val());
+                $("#village").val(village);
+
+                // 1. Validate Farmer Name
+                var nameRegex = /^[A-Za-z\s]+$/;
+                if (farmerName === "") {
+                    showError("farmerName", "Farmer Name is required.");
+                    isValid = false;
+                } else if (!nameRegex.test(farmerName)) {
+                    showError("farmerName", "Farmer Name must contain alphabetic characters and spaces only.");
+                    isValid = false;
+                }
+
+                // 2. Validate Plot ID
+                if (plotId === "") {
+                    showError("plotId", "Plot ID is required.");
+                    isValid = false;
+                } else if (!/^[A-Za-z0-9-]+$/.test(plotId)) {
+                    showError("plotId", "Plot ID can contain letters, numbers, and hyphens only.");
+                    isValid = false;
+                }
+
+                // 3. Validate Village
+                if (village === "") {
+                    showError("village", "Village is required.");
+                    isValid = false;
+                }
+
+                // ----------------------------------------------------------------------
+                // TASK 3: VALIDATE MOBILE NUMBER AND EMAIL USING JQUERY & REGEX
+                // Form will NOT submit until both fields pass validation
+                // ----------------------------------------------------------------------
+                var mobileNumber = $.trim($("#mobileNumber").val());
+                var email = $.trim($("#email").val());
+
+                if (!validateMobileNumber()) {
+                    isValid = false;
+                }
+
+                if (!validateEmail()) {
+                    isValid = false;
+                }
+
+                // Registration Date
+                var regDate = $("#registrationDate").val();
+                if (regDate === "") {
+                    showError("registrationDate", "Registration Date is required.");
+                    isValid = false;
+                } else if (regDate > today) {
+                    showError("registrationDate", "Date cannot be in the future.");
+                    isValid = false;
+                }
+
+                // Farm Photo
+                var photoInput = $("#farmPhoto")[0];
+                if (!photoInput.files || photoInput.files.length === 0) {
+                    showError("farmPhoto", "Please upload a farm photo.");
+                    isValid = false;
+                }
+
+                // Crop Stage
+                var cropStage = $("#cropStage").val();
+                if (cropStage === "") {
+                    showError("cropStage", "Please select a Crop Stage.");
+                    isValid = false;
+                }
+
+                // Soil Type
+                var soilType = $("#soilType").val();
+                if (soilType === "") {
+                    showError("soilType", "Please select a Soil Type.");
+                    isValid = false;
+                }
+
+                // Irrigation Method
+                var irrigationMethod = $("#irrigationMethod").val();
+                if (irrigationMethod === "") {
+                    showError("irrigationMethod", "Please select an Irrigation Method.");
+                    isValid = false;
+                }
+
+                // Soil Moisture (%)
+                var soilMoisture = $("#soilMoisture").val();
+                if (soilMoisture === "") {
+                    showError("soilMoisture", "Soil Moisture is required.");
+                    isValid = false;
+                } else if (Number(soilMoisture) < 0 || Number(soilMoisture) > 100) {
+                    showError("soilMoisture", "Must be between 0 and 100%.");
+                    isValid = false;
+                }
+
+                // ----------------------------------------------------------------------
+                // TASK 2: DOM MANIPULATION ON SUCCESS / FAILURE
+                // ----------------------------------------------------------------------
+                if (isValid) {
+                    var photoName = photoInput.files[0].name;
+
+                    // Dynamically generate confirmation card using jQuery DOM manipulation
+                    var confirmationHtml = `
+                        <h3>Registration Successful!</h3>
+                        <p>Your agricultural plot has been registered for AI Smart Irrigation Advisory.</p>
+                        <div class="summary-grid">
+                            <div class="summary-item"><strong>Farmer Name</strong>${farmerName}</div>
+                            <div class="summary-item"><strong>Mobile Number</strong>${mobileNumber}</div>
+                            <div class="summary-item"><strong>Email</strong>${email}</div>
+                            <div class="summary-item"><strong>Plot ID</strong>${plotId}</div>
+                            <div class="summary-item"><strong>Village</strong>${village}</div>
+                            <div class="summary-item"><strong>Registration Date</strong>${regDate}</div>
+                            <div class="summary-item"><strong>Crop Stage</strong>${cropStage}</div>
+                            <div class="summary-item"><strong>Soil Type</strong>${soilType}</div>
+                            <div class="summary-item"><strong>Irrigation Method</strong>${irrigationMethod}</div>
+                            <div class="summary-item"><strong>Soil Moisture</strong>${soilMoisture}%</div>
+                            <div class="summary-item"><strong>Photo Attached</strong>${photoName}</div>
+                        </div>
+                    `;
+
+                    $("#confirmationCard").html(confirmationHtml).slideDown(400);
+
+                    // Smooth scroll to confirmation summary card
+                    $("html, body").animate({
+                        scrollTop: $("#confirmationCard").offset().top - 80
+                    }, 500);
+
+                } else {
+                    // Smooth scroll to the first invalid field using jQuery
+                    $("html, body").animate({
+                        scrollTop: $(".error").first().offset().top - 120
+                    }, 400);
+                }
+            });
+
+            // Form Reset Event Handling using jQuery
+            $("#farmerForm").on("reset", function () {
+                setTimeout(clearErrors, 0);
+            });
+
+            // Back-to-top button interaction
+            $(window).on("scroll", function () {
+                if ($(this).scrollTop() > 400) {
+                    $("#top-btn").addClass("show");
+                } else {
+                    $("#top-btn").removeClass("show");
+                }
+            });
+
+            $("#top-btn").on("click", function () {
+                $("html, body").animate({ scrollTop: 0 }, 500);
+            });
+
+            // Scroll reveal animation using IntersectionObserver
+            var items = document.querySelectorAll('.reveal');
+            if ('IntersectionObserver' in window) {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (e) {
+                        if (e.isIntersecting) {
+                            e.target.classList.add('show');
+                            io.unobserve(e.target);
+                        }
+                    });
+                }, { threshold: 0.15 });
+                items.forEach(function (el) { io.observe(el); });
+            } else {
+                items.forEach(function (el) { el.classList.add('show'); });
+            }
+        });
+    </script>
+</body>
+
+</html>

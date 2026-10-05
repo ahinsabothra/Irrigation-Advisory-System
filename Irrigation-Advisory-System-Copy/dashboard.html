@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Dashboard</title>
+    <style>
+        :root {
+            --forest: #1f4d3a;
+            --leaf: #4f8a5b;
+            --mint: #e6f0e4;
+            --page: #f6f8f2;
+            --soil: #7a5c3e;
+            --water: #1d6fa5;
+            --water-light: #d8ecf7;
+            --ink: #22302a;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--page);
+        }
+
+        /* ---------- Top bar ---------- */
+        header.topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--forest);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        header.topbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 4px;
+        }
+        header.topbar a {
+            display: block;
+            padding: 14px 14px;
+            color: #e6f0e4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        header.topbar a:hover,
+        header.topbar a:focus-visible {
+            background: var(--leaf);
+            color: #fff;
+            outline: none;
+        }
+        header.topbar a.current { background: var(--leaf); color: #fff; }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            text-align: center;
+            padding: 50px 20px 44px;
+            color: #fff;
+            background: linear-gradient(160deg, var(--forest), var(--leaf));
+        }
+        .hero h1 { margin: 0 0 8px; font-size: clamp(2rem, 5vw, 2.8rem); }
+        .hero p.tagline { margin: 0 0 20px; font-style: italic; color: var(--water-light); font-size: 1.1rem; }
+        .hero a.scroll-cue {
+            display: inline-block;
+            padding: 10px 22px;
+            border: 2px solid #fff;
+            border-radius: 30px;
+            color: #fff;
+            text-decoration: none;
+        }
+        .hero a.scroll-cue:hover { background: #fff; color: var(--forest); }
+
+        /* ---------- Layout ---------- */
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 30px 20px 10px;
+        }
+
+        section {
+            background: #fff;
+            border-left: 5px solid var(--leaf);
+            border-radius: 6px;
+            padding: 22px 26px;
+            margin: 0 0 24px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+        section h2 { margin-top: 0; color: var(--forest); }
+        section.map-section { border-left-color: var(--water); }
+
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+        .reveal.show { opacity: 1; transform: none; }
+
+        /* ---------- Gallery ---------- */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
+        }
+        .gallery figure {
+            margin: 0;
+            background: var(--mint);
+            border-bottom: 4px solid var(--leaf);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .gallery img {
+            display: block;
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+        }
+        .gallery figcaption {
+            padding: 10px 12px;
+            text-align: center;
+            color: var(--forest);
+        }
+
+        /* ---------- Plot map ---------- */
+        /* The map is not resized, so the clickable areas stay lined up with the image */
+        .map-wrap { overflow-x: auto; }
+        .map-wrap img { display: block; max-width: none; border-radius: 4px; }
+        .map-section figcaption { margin-top: 10px; color: var(--forest); }
+        .map-hint { margin: 0 0 14px; color: var(--soil); }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--forest);
+            color: #cfe0d0;
+        }
+
+        #top-btn {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: var(--forest);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+        #top-btn.show { display: block; }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .reveal { opacity: 1; transform: none; transition: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+        <nav id="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="dashboard.html" class="current">Farm dashboard</a></li>
+                <li><a href="advisory.html">Irrigation Advisory</a></li>
+                <li><a href="table.html">Sensor data</a></li>
+                <li><a href="registration.html">Registration Form</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h1>Farm Gallery</h1>
+        <p class="tagline">Crops, equipment and plots at a glance</p>
+        <a class="scroll-cue" href="#images">Scroll down ↓</a>
+    </div>
+
+    <main>
+        <section class="reveal" id="images">
+            <h2>Farm Images</h2>
+            <div class="gallery">
+                <figure>
+                    <img src="https://cdn.britannica.com/23/126823-050-820B0A1F/Field-sugarcane-St-George-Parish-Barbados.jpg" alt="Healthy Sugarcane Crop">
+                    <figcaption><b>Healthy Sugarcane Crop</b></figcaption>
+                </figure>
+                <figure>
+                    <img src="https://www.rungtairrigation.in/wp-content/uploads/2024/10/online-drip-irrigation-system.jpg" alt="Drip Irrigation System">
+                    <figcaption><b>Drip Irrigation System</b></figcaption>
+                </figure>
+                <figure>
+                    <img src="https://circuit.rocks/cdn/shop/products/soil-moisture-sensor-analog-digital-109.jpg?v=1689317175" alt="Soil Moisture Sensor">
+                    <figcaption><b>Soil Moisture Sensor</b></figcaption>
+                </figure>
+                <figure>
+                    <img src="https://5.imimg.com/data5/SELLER/Default/2021/7/HX/VH/BZ/10005101/automatic-weather-monitoring-station-500x500.jpg" alt="Weather Monitoring Station">
+                    <figcaption><b>Weather Monitoring Station</b></figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="map-section reveal" id="map">
+            <h2>Plot Map</h2>
+            <p class="map-hint">Click a plot on the map to open its page.</p>
+            <figure style="margin:0;">
+                <div class="map-wrap">
+                    <img src="https://storage.icograms.com/templates/thumbnails/lavender-festival.png" alt="Farm map" usemap="#plot">
+                </div>
+                <map name="plot">
+                    <area shape="poly" coords="0,154,178,62,296,113,369,115,151,232" href="https://www.google.com/" alt="Plot A"> <!-- Plot A -->
+                    <area shape="poly" coords="298,165,380,126,451,162,366,203" href="https://www.facebook.com/" alt="Plot B"> <!-- Plot B -->
+                    <area shape="poly" coords="191,53,303,110,388,102,408,90,411,58,334,22,247,14" href="https://www.wikipedia.org/" alt="Settlement"> <!-- Settlement -->
+                </map>
+                <figcaption><b>Plot-Map</b></figcaption>
+            </figure>
+        </section>
+    </main>
+
+    <footer>NO COPYRIGHT - Irrigation Advisory System</footer>
+
+    <button id="top-btn" aria-label="Back to top">↑</button>
+
+    <script>
+        var items = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); }
+                });
+            }, { threshold: 0.15 });
+            items.forEach(function (el) { io.observe(el); });
+        } else {
+            items.forEach(function (el) { el.classList.add('show'); });
+        }
+
+        var btn = document.getElementById('top-btn');
+        window.addEventListener('scroll', function () {
+            btn.classList.toggle('show', window.scrollY > 400);
+        });
+        btn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

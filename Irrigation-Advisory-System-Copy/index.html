@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irrigation Advisory System</title>
+    <style>
+        :root {
+            --forest: #1f4d3a;
+            --leaf: #4f8a5b;
+            --mint: #e6f0e4;
+            --page: #f6f8f2;
+            --soil: #7a5c3e;
+            --water: #1d6fa5;
+            --water-light: #d8ecf7;
+            --ink: #22302a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 70px;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--page);
+        }
+
+        /* ---------- Top bar (stays visible while scrolling) ---------- */
+        header.topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--forest);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        header.topbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        header.topbar a {
+            display: block;
+            padding: 14px 14px;
+            color: #e6f0e4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        header.topbar a:hover,
+        header.topbar a:focus-visible {
+            background: var(--leaf);
+            color: #fff;
+            outline: none;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            text-align: center;
+            padding: 70px 20px 60px;
+            color: #fff;
+            background: linear-gradient(160deg, var(--forest), var(--leaf));
+        }
+
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+        }
+
+        .hero p.tagline {
+            margin: 0 0 24px;
+            font-style: italic;
+            color: var(--water-light);
+            font-size: 1.15rem;
+        }
+
+        .hero a.scroll-cue {
+            display: inline-block;
+            padding: 10px 22px;
+            border: 2px solid #fff;
+            border-radius: 30px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .hero a.scroll-cue:hover {
+            background: #fff;
+            color: var(--forest);
+        }
+
+        /* ---------- Page layout ---------- */
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 30px 20px 10px;
+        }
+
+        section {
+            background: #fff;
+            border-left: 5px solid var(--leaf);
+            border-radius: 6px;
+            padding: 22px 26px;
+            margin: 0 0 24px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        section h2 {
+            margin-top: 0;
+            color: var(--forest);
+        }
+
+        section ul,
+        section ol {
+            padding-left: 22px;
+            margin-bottom: 0;
+        }
+
+        /* Sections fade in once as you scroll down */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+
+        .reveal.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        .intro {
+            border-left-color: var(--water);
+        }
+
+        .intro .stat {
+            color: var(--water);
+            font-weight: 600;
+        }
+
+        .side-note {
+            background: var(--mint);
+            border-left-color: var(--soil);
+        }
+
+        /* Categories as jump links */
+        .categories ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .categories a {
+            display: inline-block;
+            padding: 6px 16px;
+            background: var(--mint);
+            color: var(--forest);
+            border-radius: 20px;
+            text-decoration: none;
+        }
+
+        .categories a:hover {
+            background: var(--leaf);
+            color: #fff;
+        }
+
+        /* Crop stages as a simple row */
+        .stages {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stages li {
+            flex: 1 1 140px;
+            text-align: center;
+            padding: 12px 8px;
+            background: var(--mint);
+            border-bottom: 4px solid var(--leaf);
+            border-radius: 4px;
+            font-style: italic;
+        }
+
+        /* ---------- Offer ---------- */
+        .offer {
+            margin: 10px 0 40px;
+            padding: 34px 26px;
+            text-align: center;
+            color: #fff;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--water), #145277);
+        }
+
+        .offer .drop {
+            font-size: 2.4rem;
+            display: block;
+        }
+
+        .offer h2 {
+            margin: 6px 0 8px;
+            color: #fff;
+        }
+
+        .offer p {
+            margin: 0 auto 18px;
+            max-width: 520px;
+            color: var(--water-light);
+        }
+
+        .offer a.btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #fff;
+            color: var(--water);
+            font-weight: 600;
+            border-radius: 30px;
+            text-decoration: none;
+        }
+
+        .offer a.btn:hover,
+        .offer a.btn:focus-visible {
+            background: var(--water-light);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--forest);
+            color: #cfe0d0;
+        }
+
+        /* Back to top button appears after scrolling */
+        #top-btn {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: var(--forest);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        #top-btn.show {
+            display: block;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .reveal {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="topbar">
+        <nav id="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="dashboard.html">Farm dashboard</a></li>
+                <li><a href="advisory.html">Irrigation Advisory</a></li>
+                <li><a href="table.html">Sensor data</a></li>
+                <li><a href="registration.html">Registration Form</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h1>Irrigation Advisory System</h1>
+        <p class="tagline">Smart Irrigation using AI &amp; Sensor Technology</p>
+        <a class="scroll-cue" href="#overview">Scroll down ↓</a>
+    </div>
+
+    <main>
+        <section class="intro reveal" id="overview">
+            <h2>Block/Taluka level Irrigation</h2>
+            <p>
+                The biggest challenge in agriculture is to increase crop production while
+                minimizing water loss. India has only <span class="stat">4%</span> of the world's
+                fresh water, and Indian agriculture uses <span class="stat">80%</span> of the
+                water available in the country.
+            </p>
+        </section>
+
+        <section class="categories reveal">
+            <h2>Categories</h2>
+            <ul>
+                <li><a href="#irrigation">Irrigation</a></li>
+                <li><a href="#sensors">Sensors</a></li>
+                <li><a href="#crops">Crop Management</a></li>
+                <li><a href="#offer">Water Conservation</a></li>
+                <li><a href="#offer">Smart Farming</a></li>
+            </ul>
+        </section>
+
+        <section class="side-note reveal" id="irrigation">
+            <h2>Irrigation</h2>
+            <p>
+                Irrigation in agriculture is the practice of applying controlled amounts of water
+                to land to help grow crops, landscape plants, and lawns.
+            </p>
+        </section>
+
+        <section class="reveal">
+            <h2>Irrigation workflow</h2>
+            <ol>
+                <li>Connect to water source</li>
+                <li>Distribute via pipes</li>
+                <li>Disperse with sprinklers</li>
+                <li>Control with timers and sensors</li>
+            </ol>
+        </section>
+
+        <section class="reveal" id="sensors">
+            <h2>Sensors Used</h2>
+            <ul>
+                <li>Soil Moisture Sensor</li>
+                <li>Temperature Sensor</li>
+                <li>Humidity Sensor</li>
+                <li>Rainfall Sensor</li>
+            </ul>
+        </section>
+
+        <section class="reveal" id="crops">
+            <h2>Crop Stages</h2>
+            <ul class="stages">
+                <li>Germination</li>
+                <li>Tillering</li>
+                <li>Grand Growth</li>
+                <li>Maturity</li>
+            </ul>
+        </section>
+
+        <div class="offer reveal" id="offer">
+            <span class="drop">💧</span>
+            <h2>Save water with smart irrigation</h2>
+            <p>Get irrigation advice based on your soil moisture, weather and crop stage, so every drop goes where it is
+                needed.</p>
+            <a class="btn" href="registration.html">Register your farm</a>
+        </div>
+    </main>
+
+    <footer>NO COPYRIGHT - Irrigation Advisory System</footer>
+
+    <button id="top-btn" aria-label="Back to top">↑</button>
+
+    <script>
+        // Fade sections in once as they scroll into view
+        var items = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); }
+                });
+            }, { threshold: 0.15 });
+            items.forEach(function (el) { io.observe(el); });
+        } else {
+            items.forEach(function (el) { el.classList.add('show'); });
+        }
+
+        // Back-to-top button
+        var btn = document.getElementById('top-btn');
+        window.addEventListener('scroll', function () {
+            btn.classList.toggle('show', window.scrollY > 400);
+        });
+        btn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+
+</html>

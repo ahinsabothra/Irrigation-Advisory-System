@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irrigation Advisory</title>
+    <style>
+        :root {
+            --forest: #1f4d3a;
+            --leaf: #4f8a5b;
+            --mint: #e6f0e4;
+            --page: #f6f8f2;
+            --soil: #7a5c3e;
+            --water: #1d6fa5;
+            --water-light: #d8ecf7;
+            --ink: #22302a;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--page);
+        }
+
+        /* ---------- Top bar ---------- */
+        header.topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--forest);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        header.topbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 4px;
+        }
+        header.topbar a {
+            display: block;
+            padding: 14px 14px;
+            color: #e6f0e4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        header.topbar a:hover,
+        header.topbar a:focus-visible {
+            background: var(--leaf);
+            color: #fff;
+            outline: none;
+        }
+        header.topbar a.current { background: var(--leaf); color: #fff; }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            text-align: center;
+            padding: 50px 20px 44px;
+            color: #fff;
+            background: linear-gradient(160deg, var(--forest), var(--leaf));
+        }
+        .hero h1 { margin: 0 0 8px; font-size: clamp(2rem, 5vw, 2.8rem); }
+        .hero p.tagline { margin: 0 0 20px; font-style: italic; color: var(--water-light); font-size: 1.1rem; }
+        .hero a.scroll-cue {
+            display: inline-block;
+            padding: 10px 22px;
+            border: 2px solid #fff;
+            border-radius: 30px;
+            color: #fff;
+            text-decoration: none;
+        }
+        .hero a.scroll-cue:hover { background: #fff; color: var(--forest); }
+
+        /* ---------- Layout ---------- */
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 30px 20px 10px;
+        }
+
+        section {
+            background: #fff;
+            border-left: 5px solid var(--leaf);
+            border-radius: 6px;
+            padding: 22px 26px;
+            margin: 0 0 24px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+        section h2 { margin-top: 0; color: var(--forest); }
+        section.sensor-section { border-left-color: var(--water); }
+        section.sensor-section h2 { color: var(--water); }
+
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+        .reveal.show { opacity: 1; transform: none; }
+
+        /* ---------- Form ---------- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px 22px;
+        }
+        .input-box label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            color: var(--forest);
+        }
+        .input-box input,
+        .input-box select {
+            width: 100%;
+            padding: 9px 10px;
+            font: inherit;
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid #b7c7b8;
+            border-radius: 5px;
+        }
+        .input-box input:focus,
+        .input-box select:focus {
+            outline: 2px solid var(--water);
+            outline-offset: 1px;
+            border-color: var(--water);
+        }
+        .sensor-section .input-box { max-width: 300px; }
+
+        /* ---------- Buttons ---------- */
+        .actions { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
+        button.btn {
+            padding: 11px 22px;
+            font: inherit;
+            font-weight: 600;
+            color: #fff;
+            background: var(--forest);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        button.btn:hover, button.btn:focus-visible { background: var(--leaf); outline: none; }
+        button.btn.secondary { background: var(--water); }
+        button.btn.secondary:hover, button.btn.secondary:focus-visible { background: #145277; }
+        .sensor-section button.btn { margin-top: 16px; }
+
+        /* ---------- Results ---------- */
+        .result {
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: var(--mint);
+            color: var(--ink);
+            border-left: 4px solid var(--leaf);
+            border-radius: 5px;
+        }
+        .result h3 { margin: 0 0 8px; color: var(--forest); }
+        .result p { margin: 6px 0; }
+        .sensor-section .result { background: var(--water-light); border-left-color: var(--water); }
+        .sensor-section .result h3 { color: var(--water); }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--forest);
+            color: #cfe0d0;
+        }
+
+        #top-btn {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: var(--forest);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+        #top-btn.show { display: block; }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .reveal { opacity: 1; transform: none; transition: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <nav id="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="dashboard.html">Farm dashboard</a></li>
+                <li><a href="advisory.html" class="current">Irrigation Advisory</a></li>
+                <li><a href="table.html">Sensor data</a></li>
+                <li><a href="registration.html">Registration Form</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h1>Irrigation Advisory System</h1>
+        <p class="tagline">Know when to water, and when to wait</p>
+        <a class="scroll-cue" href="#advisory">Scroll down ↓</a>
+    </div>
+
+    <main>
+
+        <section class="reveal">
+            <h2>Advisory Information</h2>
+            <p>
+                Welcome to the Irrigation Advisory System. Here you can find
+                information and recommendations for efficient irrigation practices
+                based on real-time sensor data and AI analysis.
+            </p>
+        </section>
+
+        <section class="reveal" id="advisory">
+            <h2>Irrigation Advisory</h2>
+
+            <div class="form-grid">
+                <div class="input-box">
+                    <label for="farmerName">Farmer Name:</label>
+                    <input type="text" id="farmerName" placeholder="Enter farmer name">
+                </div>
+
+                <div class="input-box">
+                    <label for="plotID">Plot ID:</label>
+                    <input type="text" id="plotID" placeholder="Enter Plot ID">
+                </div>
+
+                <div class="input-box">
+                    <label for="cropStage">Crop Stage:</label>
+                    <select id="cropStage">
+                        <option value="">Select Crop Stage</option>
+                        <option value="Germination">Germination</option>
+                        <option value="Vegetative">Vegetative</option>
+                        <option value="Flowering">Flowering</option>
+                        <option value="Maturity">Maturity</option>
+                        <option value="Harvesting">Harvesting</option>
+                    </select>
+                </div>
+
+                <div class="input-box">
+                    <label for="soilMoisture">Current Soil Moisture (%):</label>
+                    <input type="number" id="soilMoisture" min="0" max="100" placeholder="Enter moisture">
+                </div>
+
+                <div class="input-box">
+                    <label for="requiredMoisture">Required Soil Moisture (%):</label>
+                    <input type="number" id="requiredMoisture" min="0" max="100" placeholder="Enter required moisture">
+                </div>
+
+                <div class="input-box">
+                    <label for="rainfall">Rainfall Forecast:</label>
+                    <select id="rainfall">
+                        <option value="">Select Forecast</option>
+                        <option value="yes">Rain Expected</option>
+                        <option value="no">No Rain Expected</option>
+                    </select>
+                </div>
+
+                <div class="input-box">
+                    <label for="area">Farm Area (acres):</label>
+                    <input type="number" id="area" min="0" placeholder="Enter farm area">
+                </div>
+
+                <div class="input-box">
+                    <label for="pumpStatus">Pump Status:</label>
+                    <select id="pumpStatus">
+                        <option value="">Select Pump Status</option>
+                        <option value="ON">ON</option>
+                        <option value="OFF">OFF</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn" onclick="checkAdvisory()">Check Irrigation Advisory</button>
+                <button class="btn secondary" onclick="farm.displayFarmInfo()">Display Farm Information</button>
+            </div>
+
+            <div class="result" id="result">
+                <h3>Advisory Result</h3>
+                <p>Enter the farm details and click "Check Irrigation Advisory".</p>
+            </div>
+
+            <div class="result" id="farmInfo">
+                <h3>Farm Information</h3>
+                <p>Click "Display Farm Information" to view the details.</p>
+            </div>
+        </section>
+
+        <section class="sensor-section reveal" id="sensors">
+            <h2>Soil Moisture Sensor Readings</h2>
+
+            <p>
+                The soil moisture sensor collects readings every hour.
+                The following operations are performed on the readings.
+            </p>
+
+            <div class="input-box">
+                <label for="criticalValue">Critical Moisture Value (%):</label>
+                <input type="number" id="criticalValue" value="30" min="0" max="100">
+            </div>
+
+            <button class="btn secondary" onclick="analyzeSensorReadings()">Analyze Sensor Readings</button>
+
+            <div class="result" id="sensorResult">
+                <h3>Sensor Analysis</h3>
+                <p>Click the button to analyze the readings.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>NO COPYRIGHT - Irrigation Advisory System</footer>
+
+    <button id="top-btn" aria-label="Back to top">↑</button>
+
+    
+
+    <script>
+        let farm = {
+
+            farmerName: "",
+            plotID: "",
+            cropStage: "",
+            soilMoisture: 0,
+            area: 0,
+            pumpStatus: "",
+
+            displayFarmInfo: function() {
+
+                document.getElementById("farmInfo").innerHTML =
+
+                    "<h3>Farm Information</h3>" +
+                    "<p><strong>Farmer Name:</strong> "
+                    + this.farmerName + "</p>" +
+                    "<p><strong>Plot ID:</strong> "
+                    + this.plotID + "</p>" +
+                    "<p><strong>Crop Stage:</strong> "
+                    + this.cropStage + "</p>" +
+                    "<p><strong>Soil Moisture:</strong> "
+                    + this.soilMoisture + "%</p>" +
+                    "<p><strong>Area:</strong> "
+                    + this.area + " acres</p>" +
+                    "<p><strong>Pump Status:</strong> "
+                    + this.pumpStatus + "</p>";
+            }
+        };
+
+        function checkAdvisory() {
+            let farmerName =
+                document.getElementById("farmerName").value;
+            let plotID =
+                document.getElementById("plotID").value;
+            let cropStage =
+                document.getElementById("cropStage").value;
+            let currentSoilMoisture =
+                Number(document.getElementById("soilMoisture").value);
+            let requiredSoilMoisture =
+                Number(document.getElementById("requiredMoisture").value);
+            let rainfall =
+                document.getElementById("rainfall").value;
+            let area =
+                Number(document.getElementById("area").value);
+            let pumpStatus =
+                document.getElementById("pumpStatus").value;
+
+            if (
+                farmerName === "" ||
+                plotID === "" ||
+                cropStage === "" ||
+                isNaN(currentSoilMoisture) ||
+                isNaN(requiredSoilMoisture) ||
+                rainfall === "" ||
+                isNaN(area) ||
+                pumpStatus === ""
+            ) {
+
+                alert("Please enter all farm details.");
+                return;
+            }
+            let moistureDeficit =
+                requiredSoilMoisture - currentSoilMoisture;
+            let recommendation;
+
+            if (rainfall === "yes") {
+                recommendation = "Postpone Irrigation";
+            }
+
+            else if (currentSoilMoisture < 30) {
+                recommendation = "Irrigation Required Immediately";
+            }
+
+            else if (
+                currentSoilMoisture >= 30 &&
+                currentSoilMoisture <= 50
+            ) {
+                recommendation = "Monitor Soil Moisture";
+            }
+
+            else {
+                recommendation = "Irrigation Not Required";
+            }
+
+            farm.farmerName = farmerName;
+            farm.plotID = plotID;
+            farm.cropStage = cropStage;
+            farm.soilMoisture = currentSoilMoisture;
+            farm.area = area;
+            farm.pumpStatus = pumpStatus;
+
+            document.getElementById("result").innerHTML =
+
+                "<h3>Advisory Result</h3>" +
+                "<p><strong>Farmer Name:</strong> "
+                + farmerName + "</p>" +
+                "<p><strong>Plot ID:</strong> "
+                + plotID + "</p>" +
+                "<p><strong>Current Soil Moisture:</strong> "
+                + currentSoilMoisture + "%</p>" +
+                "<p><strong>Required Soil Moisture:</strong> "
+                + requiredSoilMoisture + "%</p>" +
+                "<p><strong>Moisture Deficit:</strong> "
+                + moistureDeficit + "%</p>" +
+                "<p><strong>Rainfall Forecast:</strong> "
+                + (rainfall === "yes"
+                    ? "Rain Expected"
+                    : "No Rain Expected") + "</p>" +
+                "<p><strong>Crop Stage:</strong> "
+                + cropStage + "</p>" +
+                "<h3>Recommendation: "
+                + recommendation + "</h3>";
+
+            alert(
+                "Moisture Deficit: " +
+                moistureDeficit +
+                "%\nRecommendation: " +
+                recommendation
+            );
+        }
+
+        function analyzeSensorReadings() {
+            let sensorReadings = [
+                25, 32, 45, 28, 35, 50,
+                42, 27, 38, 55, 30, 24
+            ];
+
+            let criticalValue =
+                Number(document.getElementById("criticalValue").value);
+            let allReadings = sensorReadings.join("%, ") + "%";
+            let minimum = Math.min(...sensorReadings);
+            let maximum = Math.max(...sensorReadings);
+            let total = 0;
+            for (let i = 0; i < sensorReadings.length; i++) {
+                total = total + sensorReadings[i];
+            }
+            let average =
+                total / sensorReadings.length;
+            let belowCritical = 0;
+            for (let i = 0; i < sensorReadings.length; i++) {
+                if (sensorReadings[i] < criticalValue) {
+                    belowCritical++;
+                }
+            }
+
+            document.getElementById("sensorResult").innerHTML =
+                "<h3>Sensor Analysis</h3>" +
+                "<p><strong>All Sensor Readings:</strong><br>"
+                + allReadings + "</p>" +
+                "<p><strong>Minimum Moisture Level:</strong> "
+                + minimum + "%</p>" +
+                "<p><strong>Maximum Moisture Level:</strong> "
+                + maximum + "%</p>" +
+                "<p><strong>Average Soil Moisture:</strong> "
+                + average.toFixed(2) + "%</p>" +
+                "<p><strong>Critical Moisture Value:</strong> "
+                + criticalValue + "%</p>" +
+                "<p><strong>Readings Below Critical Value:</strong> "
+                + belowCritical + "</p>";
+        }
+
+        // Fade sections in once as they scroll into view
+        var items = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); }
+                });
+            }, { threshold: 0.15 });
+            items.forEach(function (el) { io.observe(el); });
+        } else {
+            items.forEach(function (el) { el.classList.add('show'); });
+        }
+
+        // Back-to-top button
+        var btn = document.getElementById('top-btn');
+        window.addEventListener('scroll', function () {
+            btn.classList.toggle('show', window.scrollY > 400);
+        });
+        btn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
