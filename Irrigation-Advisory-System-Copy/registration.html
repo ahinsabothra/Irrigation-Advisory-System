@@ -217,7 +217,6 @@
             border-color: var(--water);
         }
 
-        /* Task 2: jQuery highlights invalid fields with .error class */
         .field input.error,
         .field select.error {
             border: 2px solid var(--error) !important;
@@ -225,7 +224,6 @@
             box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.2) !important;
         }
 
-        /* Task 2: Error message displayed beside the field */
         .error-message {
             color: var(--error);
             font-size: 0.82rem;
@@ -545,9 +543,6 @@
             var today = new Date().toISOString().split("T")[0];
             $("#registrationDate").attr("max", today);
 
-            /* ==========================================================================
-               TASK 2: HELPER FUNCTIONS FOR HIGHLIGHTING AND DISPLAYING ERROR MESSAGES
-               ========================================================================== */
             
             // Display an error message beside the invalid field and highlight the field using jQuery
             function showError(fieldId, message) {
@@ -562,17 +557,12 @@
                 $("#confirmationCard").slideUp(300).empty();
             }
 
-            /* ==========================================================================
-               TASK 2 & TASK 3: JQUERY EVENT HANDLING FOR TRIMMING & BLUR VALIDATION
-               ========================================================================== */
-
-            // Task 2: Remove leading and trailing spaces using $.trim() on blur
             $("#farmerName, #plotId, #village, #mobileNumber, #email").on("blur", function () {
                 var trimmedValue = $.trim($(this).val());
                 $(this).val(trimmedValue);
             });
 
-            // Task 3: Real-time blur validation for Mobile Number
+       
             $("#mobileNumber").on("blur", function () {
                 var val = $.trim($(this).val());
                 $(this).val(val);
@@ -581,7 +571,6 @@
                 }
             });
 
-            // Task 3: Real-time blur validation for Email
             $("#email").on("blur", function () {
                 var val = $.trim($(this).val());
                 $(this).val(val);
@@ -596,10 +585,6 @@
                 $(this).removeClass("error");
                 $("#" + fieldId + "Error").text("");
             });
-
-            /* ==========================================================================
-               TASK 3: VALIDATION FUNCTIONS WITH REGULAR EXPRESSIONS
-               ========================================================================== */
 
             // Validates 10-digit Indian mobile number: starts with 6, 7, 8, or 9 and has 10 digits
             function validateMobileNumber() {
@@ -639,9 +624,6 @@
                 return true;
             }
 
-            /* ==========================================================================
-               FORM SUBMISSION EVENT HANDLER (TASKS 2 & 3)
-               ========================================================================== */
             $("#farmerForm").on("submit", function (event) {
                 // Prevent form submission until all validations pass
                 event.preventDefault();
@@ -649,9 +631,6 @@
 
                 var isValid = true;
 
-                // ----------------------------------------------------------------------
-                // TASK 2: REQUIRED TEXT FIELD VALIDATION (Farmer Name, Plot ID, Village)
-                // ----------------------------------------------------------------------
                 var farmerName = $.trim($("#farmerName").val());
                 $("#farmerName").val(farmerName);
 
@@ -686,10 +665,7 @@
                     isValid = false;
                 }
 
-                // ----------------------------------------------------------------------
-                // TASK 3: VALIDATE MOBILE NUMBER AND EMAIL USING JQUERY & REGEX
-                // Form will NOT submit until both fields pass validation
-                // ----------------------------------------------------------------------
+
                 var mobileNumber = $.trim($("#mobileNumber").val());
                 var email = $.trim($("#email").val());
 
@@ -749,9 +725,6 @@
                     isValid = false;
                 }
 
-                // ----------------------------------------------------------------------
-                // TASK 2: DOM MANIPULATION ON SUCCESS / FAILURE
-                // ----------------------------------------------------------------------
                 if (isValid) {
                     var photoName = photoInput.files[0].name;
 
